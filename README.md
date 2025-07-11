@@ -100,3 +100,54 @@ In **Google Colab**, where Python models were tested, the maximum available RAM 
 
 For more information on the dataset used:  
 [The Perovskite Database Project](https://perovskitedatabase.com/)
+
+
+## 🗂️ Files and Code Included in This Repository
+
+This repository includes several R scripts and data files in `.csv` and `.xlsx` formats, which guide the complete preprocessing and imputation pipeline for the perovskite solar cell dataset.
+
+### R Scripts
+
+#### `Seleccion_variable.R`
+- **Input**: `Perovskite_database_content_all_data.csv`
+- **Output**: `variables_seleccionadas.csv`
+
+This script selects relevant variables from the original database. The resulting file then undergoes **manual preprocessing**, where:
+- Outliers and illogical values are removed,
+- Grouped columns containing information separated by symbols such as `,`, `|`, `<<`, or `>>` are split into separate columns,
+- Non-informative columns are deleted.
+
+The cleaned result is saved as `data_filtro1.xlsx`.
+
+#### `filtradoDeColumnas.R`
+- **Input**: `data_filtro1.xlsx`
+- Applies additional filters:
+  - Empty values are cleaned,
+  - "Unknown" entries are reclassified as missing,
+  - Some "NA" values are retained when they represent non-applicable fields (e.g., for structures like METALDEHYDE (MA), only concentration A1 is applicable, and A2/A3 should remain as `NA`).
+
+- **Output**: `data_filtro2.xlsx`
+
+#### `Conversor_Cat_to_Num.R`
+- **Input**: `data_filtro2.xlsx`
+- Converts categorical variables to numeric representations and appends them to the dataset.
+
+#### `imputeData.R`
+- Removes all remaining categorical variables from the dataset, leaving only numeric variables for imputation.
+
+This final dataset is ready for running the imputation models described earlier in this repository.
+
+## 📦 Required R Packages
+
+To run the scripts included in this repository, the following R packages are required:
+
+- `openxlsx` – for reading and writing `.xlsx` files  
+- `Amelia` – for multivariate imputation using bootstrapped EM algorithms  
+- `randomForest` – used by the `missForest` imputation method  
+- `mice` – for multiple imputation by chained equations  
+- `dplyr` – for data manipulation and cleaning  
+
+You can install them with the following command:
+
+```r
+install.packages(c("openxlsx", "Amelia", "randomForest", "mice", "dplyr"))
